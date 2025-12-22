@@ -16,8 +16,21 @@ def read_from_h5(file_name, **kwargs):
     phase_re = re.compile("phase_l(?P<ell>.*)_m(?P<m>.*)")
     amp_re = re.compile("amp_l(?P<ell>.*)_m(?P<m>.*)")
 
+    #Depending on the catalog, we have to read differently.
+    #The only parameter whose name changes is the first one, regarding time.
+    #In MAYA Waveform Catalog, it is "NRtimes"
+    #In RIT Catalog, it is "NRTimes".
+    #We will assume that the default is NRtimes.
+
+    if "GT" in file_name:
+        time_key = "NRtimes"
+    elif "RIT" in file_name:
+        time_key = "NRTimes"
+    else:
+        time_key = "NRtimes"
+
     with h5py.File(file_name, "r") as f:
-        t = f["NRtimes"][:]
+        t = np.array(f[time_key][:], dtype=np.float64)
         ell_m = np.array(
             [[int(match["ell"]), int(match["m"])] for key in f for match in [phase_re.match(key)] if match]
         )
