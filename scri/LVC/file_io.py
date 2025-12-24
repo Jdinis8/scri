@@ -2,6 +2,7 @@
 # See LICENSE file for details: <https://github.com/moble/spherical_functions/blob/master/LICENSE>
 
 import warnings
+import h5py
 import numpy as np
 import spherical_functions as sf
 from .. import WaveformModes, Inertial, h
@@ -23,10 +24,15 @@ def read_from_h5(file_name, **kwargs):
     with h5py.File(file_name, "r") as file:
         def check_structure(name, obj):
             nonlocal time_key
-            if(name.lower() == time_key):
-               time_key = name
-        file.visititems(check_structure)
-    
+            if name.lower() == time_key:
+                time_key = name
+                raise StopIteration  # stop traversal immediately
+
+        try:
+            file.visititems(check_structure)
+        except StopIteration:
+            pass
+        
     with h5py.File(file_name, "r") as f:
         t = np.array(f[time_key][:], dtype=np.float64)
         ell_m = np.array(
