@@ -233,6 +233,8 @@ class WaveformModes(WaveformBase):
             ell_max=self.ell_max,
         )
 
+        #print("FrameType: ", self.frame_type_string.lower(), "Frame: ", self.frame, "data_type: ", self.data_type_string.lower(), "spin_weight: ", self.spin_weight, "version hist: ", self.version_hist)
+
         # If self.frame.size==0, we just don't pass any argument
         if self.frame.size == 1:
             kwargs["frame"] = quaternionic.array([quaternion.as_float_array(self.frame)])
@@ -243,6 +245,8 @@ class WaveformModes(WaveformBase):
                 f"Frame size ({self.frame.size}) should be 0, 1, or "
                 f"equal to the number of time steps ({self.n_times})"
             )
+            
+        #print("FrameType: ", self.frame_type_string.lower(), "Frame: ", self.frame, "data_type: ", self.data_type_string.lower(), "spin_weight: ", self.spin_weight, "version hist: ", self.version_hist)
 
         w = sxs.WaveformModes(self.data, **kwargs)
 
